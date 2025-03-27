@@ -41,7 +41,7 @@ public class PlayerHUD : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         //Trigger red flash
-        OnTakeHit?.Invoke();
+        OnTakeHit.Invoke();
         UpdateHealthBar();
 
         if (currentHealth < 0)
