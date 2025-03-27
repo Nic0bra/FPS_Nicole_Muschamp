@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 public class PlayerHUD : MonoBehaviour
 {
@@ -12,9 +13,48 @@ public class PlayerHUD : MonoBehaviour
 
     FPSController player;
 
+    //Editing this script for health
+
+    //References and variables
+    [SerializeField] UnityEvent OnTakeHit;
+    [SerializeField] Image hitImage;
+    [SerializeField] int maxHealth = 100;
+    float currentHealth;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         player = FindObjectOfType<FPSController>();
+
+        //reset health turn off screen flash and update health bar
+        currentHealth = maxHealth;
+        UpdateHealthBar();
+    }
+
+    //Take damage
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        //Keep health from going below zero
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        //Trigger red flash
+        OnTakeHit?.Invoke();
+        UpdateHealthBar();
+
+        if (currentHealth < 0)
+        {
+            Debug.Log("Stop hitting yourself, you died");
+        }
+    }
+
+    void UpdateHealthBar()
+    {
+        if (healthBar != null)
+        {
+            healthBar.fillAmount = currentHealth / maxHealth;
+        }
     }
 }

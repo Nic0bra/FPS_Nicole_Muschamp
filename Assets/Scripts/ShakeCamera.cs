@@ -11,22 +11,30 @@ public class ShakeCamera : MonoBehaviour
     [SerializeField] float shakeStrength = 2f;
     [SerializeField] float shakeDuration = 0.2f;
 
-    //Reference the events
-    public UnityEvent OnShakeStart = new UnityEvent();
-    public UnityEvent OnShakeStop = new UnityEvent();
-
     //Start Shake function
     public void StartShake()
     {
-        vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = shakeStrength;
-
-        Invoke(nameof(StopShake), shakeDuration);
+        //Get the camera
+        var noise = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        //Make sure noise is active
+        if (noise != null)
+        {
+            //Start Shake after duration stop it
+            noise.m_AmplitudeGain = shakeStrength;
+            Invoke(nameof(StopShake), shakeDuration);
+        }
+        //Problems with the shake so we debuggin
+        else { Debug.Log("Noise component missing on vcam"); }
     }
 
     //End Shake function
     public void StopShake()
-    {
-        shakeStrength = 0;
-        vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = shakeStrength;
+    {   //Get the camera
+        var noise = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        //Set shake to 0 to stop shake
+        if (noise != null)
+        {
+            noise.m_AmplitudeGain = 0;
+        }
     }
 }
