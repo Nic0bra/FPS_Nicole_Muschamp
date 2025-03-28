@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class FPSController : MonoBehaviour
 {
+    //References
+    [SerializeField] PlayerHUD playerHUD;
     // references
     CharacterController controller;
     [SerializeField] GameObject cam;
@@ -166,11 +168,19 @@ public class FPSController : MonoBehaviour
     // Character Controller can't use OnCollisionEnter :D thanks Unity
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (hit.gameObject.GetComponent<Damager>())
+        Damager damager = hit.gameObject.GetComponent<Damager>();
+        if (damager != null)
         {
             var collisionPoint = hit.collider.ClosestPoint(transform.position);
             var knockbackAngle = (transform.position - collisionPoint).normalized;
             velocity = (20 * knockbackAngle);
+
+            //Apply damage
+            if (playerHUD != null)
+            {
+                //Pass damage
+                playerHUD.TakeDamage(damager.damageAmount);
+            }
         }
     }
 }
